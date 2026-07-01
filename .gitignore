@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Disposable / generated
+temporary screenshots/
+.tmp/
+scratchpad/
+
+# Secrets & local config
+.env
+credentials.json
+token.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

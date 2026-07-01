@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — The Ten Par-Cent Club</title>
+  <meta name="description" content="Get in touch with the Ten Par-Cent Club. Parents, ask about saving strategies. Schools, book a free financial literacy talk for your learners." />
+  <meta name="theme-color" content="#16324f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="wrap-wide nav">
+      <a class="brand" href="index.html" aria-label="The Ten Par-Cent Club — home">
+        <span class="brand__mark">The 10&nbsp;<span class="pc">Par-cent</span>&nbsp;Club</span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html" aria-current="page">Contact</a>
+      </nav>
+      <div class="nav__cta">
+        <a class="btn btn--gold btn--sm" href="#form">Send a message <span class="arw" aria-hidden="true">→</span></a>
+        <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- PAGE HERO -->
+    <section class="page-hero on-navy">
+      <div class="page-hero__pct" data-parallax aria-hidden="true">%</div>
+      <div class="wrap">
+        <p class="eyebrow reveal">Let's talk</p>
+        <h1 class="h-1 reveal" data-d="1">Reach out — we'll take it from here</h1>
+        <p class="lead reveal" data-d="2">Tell us a little about what you need. Whether you're a parent planning ahead or a school ready to book, we read every message and reply personally.</p>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section on-cream" id="form">
+      <div class="wrap">
+        <div class="contact-grid">
+          <!-- FORM -->
+          <div class="reveal">
+            <form class="form-card" id="contactForm" novalidate>
+              <!-- honeypot: hidden from humans, catches bots -->
+              <div class="hp" aria-hidden="true">
+                <label for="company">Company (leave blank)</label>
+                <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <div class="field">
+                <label for="name">Full name <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="name" name="name" autocomplete="name" required aria-required="true" />
+                <p class="err" id="err-name">Please enter your name.</p>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="email">Email address <span class="req" aria-hidden="true">*</span></label>
+                  <input type="email" id="email" name="email" autocomplete="email" required aria-required="true" />
+                  <p class="err" id="err-email">Please enter a valid email address.</p>
+                </div>
+                <div class="field">
+                  <label for="phone">Phone number <span class="muted" style="font-weight:400">(optional)</span></label>
+                  <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" />
+                  <p class="err" id="err-phone">Please enter a valid phone number.</p>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="role">I am a… <span class="req" aria-hidden="true">*</span></label>
+                <select id="role" name="role" required aria-required="true">
+                  <option value="" disabled selected>Please choose one</option>
+                  <option value="Parent">Parent</option>
+                  <option value="School">School</option>
+                  <option value="Other">Other</option>
+                </select>
+                <p class="err" id="err-role">Please let us know who you are.</p>
+              </div>
+
+              <div class="field">
+                <label for="message">Message <span class="req" aria-hidden="true">*</span></label>
+                <textarea id="message" name="message" required aria-required="true" placeholder="Tell us what you're hoping to do — a savings plan for your child, or a talk for your learners."></textarea>
+                <p class="err" id="err-message">Please tell us a little about what you need.</p>
+              </div>
+
+              <button type="submit" class="btn btn--gold form-submit">Send message <span class="arw" aria-hidden="true">→</span></button>
+              <p class="form-error" id="formError" role="alert" hidden>
+                Sorry — we couldn't send your message just now. Please try again, or email us directly at <a href="mailto:hello@tenparcent.co.za">hello@tenparcent.co.za</a>.
+              </p>
+              <p class="form-note">
+                <svg class="form-note__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Your details are only used to reply to you, and are protected against spam. Sent securely — no account or app needed.</span>
+              </p>
+            </form>
+
+            <!-- SUCCESS -->
+            <div class="form-card form-success" id="formSuccess" role="status" aria-live="polite">
+              <div class="tick" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+              </div>
+              <h3>Thank you — we'll be in touch soon!</h3>
+              <p class="muted" id="successMsg">Your message is on its way. We usually reply within one working day.</p>
+              <button class="btn btn--ghost mt-2" id="sendAnother" type="button">Send another message</button>
+            </div>
+          </div>
+
+          <!-- INFO ASIDE -->
+          <aside class="on-navy" style="background:var(--navy);border-radius:var(--radius);padding:clamp(1.6rem,3vw,2.4rem)">
+            <div class="contact-info reveal" data-d="1">
+              <p class="eyebrow" style="margin-bottom:1.2rem">Other ways to reach us</p>
+              <div class="info-item">
+                <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+                <div><div class="lbl">Email</div><div class="val"><a href="mailto:hello@tenparcent.co.za">hello@tenparcent.co.za</a></div></div>
+              </div>
+              <div class="info-item">
+                <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg></span>
+                <div><div class="lbl">Phone</div><div class="val"><a href="tel:+27000000000">+27 (0)00 000 0000</a></div></div>
+              </div>
+              <div class="info-item">
+                <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                <div><div class="lbl">Based in</div><div class="val">Sandton, South Africa</div></div>
+              </div>
+              <div class="info-item">
+                <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                <div><div class="lbl">Response time</div><div class="val">Within one working day</div></div>
+              </div>
+
+              <div class="socials" aria-label="Social media" style="margin-top:1.6rem">
+                <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9.1c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.2-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H7.5v3H10v8h3Z"/></svg></a>
+                <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.5H4V20h2.9V8.5ZM5.4 4a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20 20h-2.9v-6c0-1.5-.6-2.3-1.7-2.3-1 0-1.6.7-1.6 2.3v6H10.9V8.5h2.8v1.3c.4-.7 1.4-1.6 3-1.6 2.2 0 3.3 1.4 3.3 4.2V20Z"/></svg></a>
+                <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="wrap-wide">
+      <div class="footer__top">
+        <div>
+          <span class="brand__mark">The 10&nbsp;<span class="pc">Par-cent</span>&nbsp;Club</span>
+          <p class="footer__tag"><b>Same fee,</b> one less worry.</p>
+          <p class="footer__blurb">A South African financial literacy initiative helping families save with purpose — and giving learners the money skills they deserve.</p>
+          <div class="socials" aria-label="Social media">
+            <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9.1c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.2-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H7.5v3H10v8h3Z"/></svg></a>
+            <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.5H4V20h2.9V8.5ZM5.4 4a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20 20h-2.9v-6c0-1.5-.6-2.3-1.7-2.3-1 0-1.6.7-1.6 2.3v6H10.9V8.5h2.8v1.3c.4-.7 1.4-1.6 3-1.6 2.2 0 3.3 1.4 3.3 4.2V20Z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul class="footer__links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="contact.html?type=parent">For parents</a></li>
+            <li><a href="contact.html?type=school">For schools</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Get in touch</h4>
+          <ul class="footer__links footer__contact">
+            <li><a href="mailto:hello@tenparcent.co.za">hello@tenparcent.co.za</a></li>
+            <li><a href="tel:+27000000000">+27 (0)00 000 0000</a></li>
+            <li>Sandton, South Africa</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bar">
+        <span class="footer__affil">An affiliate of <b>Hereford Group</b></span>
+        <span>© <span id="year">2026</span> The Ten Par-Cent Club. All rights reserved.</span>
+      </div>
+      <p class="footer__legal">The Ten Par-Cent Club provides general financial education and information. Nothing on this website constitutes financial advice. Any financial services referenced are rendered by appropriately authorised providers in terms of the FAIS Act. Contact details above are placeholders to be confirmed by the client before the site goes live.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
