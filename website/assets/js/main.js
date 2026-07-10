@@ -12,11 +12,20 @@
   /* ---- Current year ---- */
   $$("#year").forEach((el) => (el.textContent = new Date().getFullYear()));
 
-  /* ---- Sticky header state ---- */
+  /* ---- Sticky header state ----
+     Hysteresis dead-band (add at >16px, remove at <4px) so the class can't
+     flip-flop right at the threshold and cause a flicker near the top. */
   const header = $("#siteHeader");
-  const onScroll = () => header && header.classList.toggle("scrolled", window.scrollY > 12);
-  onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
+  if (header) {
+    let scrolled = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (!scrolled && y > 16) { scrolled = true; header.classList.add("scrolled"); }
+      else if (scrolled && y < 4) { scrolled = false; header.classList.remove("scrolled"); }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
 
   /* ---- Mobile nav ---- */
   const toggle = $("#navToggle");
@@ -24,12 +33,20 @@
   if (toggle && links) {
     const setOpen = (open) => {
       links.classList.toggle("open", open);
+      document.body.classList.toggle("nav-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     };
-    toggle.addEventListener("click", () => setOpen(!links.classList.contains("open")));
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(!links.classList.contains("open"));
+    });
     $$("a", links).forEach((a) => a.addEventListener("click", () => setOpen(false)));
     document.addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
+    // Tap anywhere outside the menu to close it
+    document.addEventListener("click", (e) => {
+      if (links.classList.contains("open") && !links.contains(e.target)) setOpen(false);
+    });
     window.addEventListener("resize", () => window.innerWidth > 820 && setOpen(false));
   }
 
@@ -54,106 +71,6 @@
       { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
     );
     reveals.forEach((el) => io.observe(el));
-  }
-
-  /* ---- Count-up stats ---- */
-  const counters = $$("[data-count]");
-  const runCount = (el) => {
-    const target = parseFloat(el.dataset.count);
-    const suffix = el.dataset.suffix || "";
-    if (reduce) { el.textContent = target + suffix; return; }
-    const dur = 1400;
-    let start = null;
-    const step = (t) => {
-      if (start === null) start = t;
-      const p = Math.min((t - start) / dur, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(target * eased) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-  if (counters.length) {
-    if (!("IntersectionObserver" in window)) {
-      counters.forEach(runCount);
-    } else {
-      const cio = new IntersectionObserver(
-        (entries, obs) => entries.forEach((en) => {
-          if (en.isIntersecting) { runCount(en.target); obs.unobserve(en.target); }
-        }),
-        { threshold: 0.6 }
-      );
-      counters.forEach((el) => cio.observe(el));
-    }
-  }
-
-  /* ---- Hero savings-growth curve ---- */
-  const chart = $("#growthChart");
-  if (chart) {
-    const W = 460, H = 210, pad = 6;
-    // Compounding: R500/month, ~9% p.a., 18 years -> normalised for the illustration.
-    const monthly = 500, rate = 0.09 / 12, months = 18 * 12;
-    const pts = [];
-    let bal = 0, peak = 0;
-    for (let m = 0; m <= months; m++) {
-      bal = bal * (1 + rate) + monthly;
-      if (m % 6 === 0) pts.push(bal);
-      peak = bal;
-    }
-    const n = pts.length - 1;
-    const x = (i) => pad + (i / n) * (W - pad * 2);
-    const y = (v) => H - pad - (v / peak) * (H - pad * 2);
-    let d = `M ${x(0).toFixed(1)} ${y(pts[0]).toFixed(1)}`;
-    for (let i = 1; i < pts.length; i++) {
-      const cx = (x(i - 1) + x(i)) / 2;
-      d += ` C ${cx.toFixed(1)} ${y(pts[i - 1]).toFixed(1)}, ${cx.toFixed(1)} ${y(pts[i]).toFixed(1)}, ${x(i).toFixed(1)} ${y(pts[i]).toFixed(1)}`;
-    }
-    const line = $("#growthLine");
-    const fill = $("#growthFill");
-    const dot = $("#growthDot");
-    const valEl = $("#vizVal");
-    line.setAttribute("d", d);
-    fill.setAttribute("d", `${d} L ${x(n).toFixed(1)} ${H - pad} L ${x(0).toFixed(1)} ${H - pad} Z`);
-
-    const fmt = (v) => "R" + Math.round(v).toLocaleString("en-ZA");
-    const finalVal = peak;
-
-    const animate = () => {
-      if (reduce) {
-        valEl.innerHTML = fmt(finalVal) + "<small> by age 18</small>";
-        dot.setAttribute("opacity", "1");
-        dot.setAttribute("cx", x(n)); dot.setAttribute("cy", y(pts[n]));
-        return;
-      }
-      const len = line.getTotalLength();
-      line.style.strokeDasharray = len;
-      line.style.strokeDashoffset = len;
-      fill.style.opacity = "0";
-      const dur = 1900;
-      let start = null;
-      dot.setAttribute("opacity", "1");
-      const step = (t) => {
-        if (start === null) start = t;
-        const p = Math.min((t - start) / dur, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        line.style.strokeDashoffset = len * (1 - eased);
-        fill.style.transition = "opacity .6s ease";
-        fill.style.opacity = String(eased);
-        const pt = line.getPointAtLength(len * eased);
-        dot.setAttribute("cx", pt.x); dot.setAttribute("cy", pt.y);
-        valEl.innerHTML = fmt(finalVal * eased) + "<small> by age 18</small>";
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    };
-
-    if (!("IntersectionObserver" in window)) { animate(); }
-    else {
-      const vio = new IntersectionObserver((entries, obs) => entries.forEach((en) => {
-        if (en.isIntersecting) { animate(); obs.unobserve(en.target); }
-      }), { threshold: 0.4 });
-      vio.observe(chart);
-    }
   }
 
   /* ---- Ambient parallax on the ghosted % ---- */
@@ -204,7 +121,10 @@
       name: { el: $("#name"), test: (v) => v.trim().length >= 2 },
       email: { el: $("#email"), test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
       phone: { el: $("#phone"), test: (v) => v.trim() === "" || /^[+()\-\s\d]{7,}$/.test(v.trim()) },
+      address: { el: $("#address"), test: (v) => v.trim().length >= 4 },
       role: { el: $("#role"), test: (v) => v.trim() !== "" },
+      school: { el: $("#school"), test: (v) => v.trim().length >= 2 },
+      fees: { el: $("#fees"), test: (v) => $("#role").value !== "Parent" || v.trim() !== "" },
       message: { el: $("#message"), test: (v) => v.trim().length >= 5 },
     };
 
@@ -214,6 +134,120 @@
       f.el.closest(".field").classList.toggle("invalid", invalid);
       f.el.setAttribute("aria-invalid", String(invalid));
     };
+
+    // School-fees dropdown only applies to parents.
+    const cselectSyncs = []; // custom dropdowns re-read their select's value via these
+    const feesField = $("#feesField");
+    const toggleFees = () => {
+      if (!feesField) return;
+      const isParent = fields.role.el.value === "Parent";
+      feesField.hidden = !isParent;
+      if (!isParent) { fields.fees.el.value = ""; setInvalid("fees", false); }
+      cselectSyncs.forEach((fn) => fn());
+    };
+    fields.role.el.addEventListener("change", toggleFees);
+    toggleFees(); // reflect a ?type= prefill on load
+
+    /* ---- Custom themed dropdowns ----
+       Replaces the native <select> UI (whose option list can't be styled)
+       with a themed listbox. The native select stays in the form, hidden,
+       as the source of truth for value, validation and submission. */
+    const openCselects = [];
+    const enhanceSelect = (sel) => {
+      if (!sel || sel.dataset.enhanced) return;
+      sel.dataset.enhanced = "true";
+
+      const wrap = document.createElement("div");
+      wrap.className = "cselect";
+      sel.parentNode.insertBefore(wrap, sel);
+      wrap.appendChild(sel);
+
+      const fieldLabel = sel.closest(".field").querySelector("label");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cselect__btn";
+      btn.setAttribute("aria-haspopup", "listbox");
+      btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-label", fieldLabel ? fieldLabel.textContent.replace("*", "").trim() : "Choose an option");
+      btn.innerHTML = '<span class="cselect__val"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+      const valEl = $(".cselect__val", btn);
+
+      const list = document.createElement("ul");
+      list.className = "cselect__list";
+      list.setAttribute("role", "listbox");
+
+      const opts = [];
+      Array.from(sel.options).forEach((o) => {
+        if (o.disabled) return; // the "Please choose…" placeholder stays out of the list
+        const li = document.createElement("li");
+        li.className = "cselect__opt";
+        li.setAttribute("role", "option");
+        li.tabIndex = -1;
+        li.dataset.value = o.value;
+        li.textContent = o.textContent;
+        list.appendChild(li);
+        opts.push(li);
+      });
+      wrap.appendChild(btn);
+      wrap.appendChild(list);
+      sel.focusTarget = btn; // validation focuses this instead of the hidden select
+
+      const placeholderOpt = sel.querySelector("option[disabled]");
+      const placeholder = placeholderOpt ? placeholderOpt.textContent : "Please choose";
+
+      const sync = () => {
+        const current = opts.find((o) => o.dataset.value === sel.value && sel.value !== "");
+        valEl.textContent = current ? current.textContent : placeholder;
+        btn.classList.toggle("is-placeholder", !current);
+        opts.forEach((o) => o.setAttribute("aria-selected", String(o === current)));
+      };
+      sync();
+      cselectSyncs.push(sync);
+
+      const setOpenSel = (open) => {
+        wrap.classList.toggle("open", open);
+        btn.setAttribute("aria-expanded", String(open));
+        if (open) {
+          openCselects.forEach((w) => w !== wrap && w.__close());
+          const target = opts.find((o) => o.getAttribute("aria-selected") === "true") || opts[0];
+          if (target) target.focus();
+        }
+      };
+      wrap.__close = () => setOpenSel(false);
+      openCselects.push(wrap);
+
+      const choose = (li) => {
+        sel.value = li.dataset.value;
+        sel.dispatchEvent(new Event("input", { bubbles: true }));
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+        sync();
+        setInvalid(sel.id, false);
+        setOpenSel(false);
+        btn.focus();
+      };
+
+      btn.addEventListener("click", () => setOpenSel(!wrap.classList.contains("open")));
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); setOpenSel(true); }
+      });
+      opts.forEach((li, i) => {
+        li.addEventListener("click", () => choose(li));
+        li.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowDown") { e.preventDefault(); (opts[i + 1] || opts[0]).focus(); }
+          else if (e.key === "ArrowUp") { e.preventDefault(); (opts[i - 1] || opts[opts.length - 1]).focus(); }
+          else if (e.key === "Home") { e.preventDefault(); opts[0].focus(); }
+          else if (e.key === "End") { e.preventDefault(); opts[opts.length - 1].focus(); }
+          else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(li); }
+          else if (e.key === "Escape") { setOpenSel(false); btn.focus(); }
+          else if (e.key === "Tab") { setOpenSel(false); }
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (wrap.classList.contains("open") && !wrap.contains(e.target)) setOpenSel(false);
+      });
+    };
+    enhanceSelect($("#role"));
+    enhanceSelect($("#fees"));
 
     // Validate on blur once touched
     Object.keys(fields).forEach((key) => {
@@ -239,7 +273,7 @@
         if (!ok && !firstBad) firstBad = fields[key].el;
       });
 
-      if (firstBad) { firstBad.focus(); return; }
+      if (firstBad) { (firstBad.focusTarget || firstBad).focus(); return; }
 
       sendMessage();
     });
@@ -265,12 +299,15 @@
 
       const payload = {
         access_key: FORM_ACCESS_KEY,
-        subject: `New enquiry — ${fields.role.el.value} — ${fields.name.el.value}`,
+        subject: `New enquiry: ${fields.role.el.value}, ${fields.name.el.value}`,
         from_name: "The Ten Par-Cent Club website",
         name: fields.name.el.value.trim(),
         email: fields.email.el.value.trim(),
         phone: fields.phone.el.value.trim() || "Not provided",
+        address: fields.address.el.value.trim(),
         "I am a": fields.role.el.value,
+        "School name": fields.school.el.value.trim(),
+        "Approximate school fees": fields.fees.el.value || "Not applicable",
         message: fields.message.el.value.trim(),
         botcheck: "", // Web3Forms honeypot
       };
@@ -310,6 +347,7 @@
     if (again) again.addEventListener("click", () => {
       form.reset();
       Object.keys(fields).forEach((k) => setInvalid(k, false));
+      toggleFees(); // also re-syncs the custom dropdown labels
       hideError();
       $("#formSuccess").classList.remove("show");
       form.classList.remove("is-hidden");
