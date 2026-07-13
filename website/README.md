@@ -46,7 +46,7 @@ root directory to `website`). Auto HTTPS + global CDN.
 **GitHub Pages:** push the repo, then Settings → Pages → deploy from branch, folder `/website`
 (or move these files to the repo root / `docs/`). Auto HTTPS on the `github.io` domain.
 
-Point the client's domain (`tenparcent.co.za`) at either host per their DNS docs.
+Point the client's domain (`10parcentclub.co.za`, registered via Afrihost) at either host per their DNS docs.
 
 ## Still to do before go-live
 1. **Add the Web3Forms key** (above) so the form sends.

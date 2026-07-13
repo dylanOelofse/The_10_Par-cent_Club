@@ -56,7 +56,7 @@ Keep Web3Forms' default template (free tier), which renders each payload field a
 - Only relevant fields appear — no "Not provided" / "Not applicable" filler rows.
 - Subject stays: `New enquiry: <Role>, <Name>`.
 - `from_name` stays: "The Ten Par-Cent Club website".
-- Recipient is controlled in the Web3Forms dashboard (currently `dylanoelofse2003@gmail.com` for testing, later `hello@tenparcent.co.za`). No code change involved.
+- Recipient is controlled in the Web3Forms dashboard (currently `dylanoelofse2003@gmail.com` for testing, later `info@10parcentclub.co.za`). No code change involved.
 - `access_key` and `botcheck` fields unchanged.
 
 ## Input validation (audited 2026-07-13)
