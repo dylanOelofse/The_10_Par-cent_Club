@@ -80,10 +80,11 @@
         <!-- FORM -->
         <div class="reveal">
             <form class="form-card" id="contactForm" novalidate>
-              <!-- honeypot: hidden from humans, catches bots -->
+              <!-- honeypot: hidden from humans, catches bots. A checkbox is used
+                   because browser autofill fills hidden text inputs (e.g. "Company"),
+                   which made real submissions get silently dropped as bots. -->
               <div class="hp" aria-hidden="true">
-                <label for="company">Company (leave blank)</label>
-                <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+                <input type="checkbox" id="botcheck" name="botcheck" tabindex="-1" autocomplete="off" />
               </div>
 
               <div class="field">

@@ -262,9 +262,11 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      // Honeypot: if filled, silently drop (bot).
-      const hp = $("#company");
-      if (hp && hp.value.trim() !== "") { showSuccess(); return; }
+      // Honeypot: bots tick the hidden checkbox; browsers never autofill checkboxes.
+      // (Was a hidden text input, but Chrome autofill filled it and real
+      // submissions were silently dropped as bots.)
+      const hp = $("#botcheck");
+      if (hp && hp.checked) { showSuccess(); return; }
 
       let firstBad = null;
       Object.keys(fields).forEach((key) => {
