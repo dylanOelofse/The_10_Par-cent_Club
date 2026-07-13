@@ -59,6 +59,12 @@ Keep Web3Forms' default template (free tier), which renders each payload field a
 - Recipient is controlled in the Web3Forms dashboard (currently `dylanoelofse2003@gmail.com` for testing, later `hello@tenparcent.co.za`). No code change involved.
 - `access_key` and `botcheck` fields unchanged.
 
+## Input validation (audited 2026-07-13)
+
+Existing rules verified as correct: name ≥ 2 chars, email pattern check, address ≥ 4 chars, role required, school name ≥ 2 chars, fees required only for Parent (cleared and skipped for School), message ≥ 5 chars; blur/input/submit triggers and first-invalid-field focus all behave correctly, and the honeypot silently drops bots.
+
+One fix included in this work: the optional phone rule (`/^[+()\-\s\d]{7,}$/`) accepts symbol-only strings like `+++++++`. New rule: when phone is non-empty it must match the existing character set **and contain at least 7 digits**.
+
 ## Error handling
 
 - Send failure (network error or non-success response): inline error box, unchanged.
@@ -73,5 +79,6 @@ Manual, via local server (`npx serve website`) and then the deployed URL:
 2. Submit as School without phone → email has no phone row and no fees row.
 3. Submit twice in a row → second toast displays cleanly.
 4. Failure path: temporarily corrupt the access key → inline error box shows, no toast, form values retained.
+7. Phone validation: `+++++++` rejected; `072 547 3640` and `+27 72 547 3640` accepted; empty accepted.
 5. Reduced motion (OS setting) → toast fades without sliding.
 6. Screen reader sanity check: toast text is announced.
