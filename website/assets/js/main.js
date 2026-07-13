@@ -104,7 +104,7 @@
      Leave the key as "" to run in demo mode (shows the confirmation
      without actually sending — handy for local previews).
      ============================================================ */
-  const FORM_ACCESS_KEY = ""; // e.g. "abcd1234-56ef-78ab-90cd-1234567890ab"
+  const FORM_ACCESS_KEY = "3ed23f0f-0acf-4d70-82ad-c6d39cf352c0"; // e.g. "abcd1234-56ef-78ab-90cd-1234567890ab"
   const FORM_ENDPOINT = "https://api.web3forms.com/submit";
 
   const form = $("#contactForm");
